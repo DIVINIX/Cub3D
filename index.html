@@ -7,10 +7,9 @@
 <script>THREEx.ArToolkitContext.baseURL = '/'</script>
 
 <body style='margin : 0px; overflow: hidden; font-family: Monospace;'><div style='position: absolute; top: 10px; width:100%; text-align: center; z-index: 1;'>
-	<a href="https://github.com/jeromeetienne/AR.js/" target="_blank">AR.js</a> - three.js camera transform
-	<br/>
-	Contact me any time at <a href='https://twitter.com/jerome_etienne' target='_blank'>@jerome_etienne</a>
-</div><script>
+</div>
+
+<script>
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Init
 	//////////////////////////////////////////////////////////////////////////////////
@@ -120,18 +119,72 @@
 
 	// add the cube
 	var geometry	= new THREE.CubeGeometry(1,1,1);
-	var material	= new THREE.MeshNormalMaterial({
-		transparent : true,
-		opacity: 0.9,
-		side: THREE.DoubleSide
-	}); 
+
+	// all colors
+	var redColor = new THREE.Color( 0xffffff );
+	redColor.setRGB( 255, 0, 0 );
+	var greenColor = new THREE.Color( 0xffffff );
+	greenColor.setRGB( 0, 255, 0 );
+	var blueColor = new THREE.Color( 0xffffff );
+	blueColor.setRGB( 0, 0, 255 );
+	var blackColor = new THREE.Color( 0xffffff );
+	blackColor.setRGB( 0, 0, 0 );
+	var testColor = new THREE.Color( 0xffffff );
+	testColor.setRGB( 155, 155, 155 );
+
+	//TODO: faire un tableau 
+	var face0 = geometry.faces[ 0 ];
+	var face1 = geometry.faces[ 1 ];
+	var face2 = geometry.faces[ 2 ];
+	var face3 = geometry.faces[ 3 ]; 
+	var face4 = geometry.faces[ 4 ]; 
+	var face5 = geometry.faces[ 5 ];
+	var face6 = geometry.faces[ 6 ]; 
+	var face7 = geometry.faces[ 7 ];
+	var face8 = geometry.faces[ 8 ];
+	var face9 = geometry.faces[ 9 ];
+	var face10 = geometry.faces[ 10 ];
+	var face11 = geometry.faces[ 11 ];
+
+	// face droite
+	face0.color = redColor;
+	face1.color = redColor;
+
+	// face gauche
+	face2.color = greenColor;
+	face3.color = greenColor;
+
+	// face haut ++
+	face4.color = blueColor;
+	face5.color = blueColor;
+
+	// face dessous
+	face6.color = blackColor;
+	face7.color = blackColor;
+
+	// face bas
+	face8.color = blackColor;
+	face9.color = blackColor;
+
+	// face haut
+	face10.color = testColor;
+	face11.color = testColor;
+
+
+	var material = new THREE.MeshBasicMaterial( 
+    { 
+    	color: 0xffffff, shading: THREE.FlatShading, 
+    	vertexColors: THREE.FaceColors
+	});
+
+
 	var mesh	= new THREE.Mesh( geometry, material );
 	mesh.position.y	= geometry.parameters.height/2
 	scene.add( mesh );
 	
 	
 	onRenderFcts.push(function(delta){
-		mesh.rotation.y += Math.PI*delta
+		//mesh.rotation.x += Math.PI*delta
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
