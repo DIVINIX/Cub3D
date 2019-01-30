@@ -117,10 +117,15 @@
 	//		add an object in the scene
 	//////////////////////////////////////////////////////////////////////////////////
 
-	// add the cube
+	// Ajout du cube
 	var geometry	= new THREE.CubeGeometry(1,1,1);
+	var geometryDroit = new THREE.CubeGeometry(1,1,1);
+	var geometryGauche = new THREE.CubeGeometry(1,1,1);
+	var geometrySommet = new THREE.CubeGeometry(1,1,1);
+	var geometryHaut = new THREE.CubeGeometry(1,1,1);
+	var geometryBas = new THREE.CubeGeometry(1,1,1);
 
-	// all colors
+	// Ajout des couleurs (test)
 	var redColor = new THREE.Color( 0xffffff );
 	redColor.setRGB( 255, 0, 0 );
 	var greenColor = new THREE.Color( 0xffffff );
@@ -170,22 +175,49 @@
 	face10.color = testColor;
 	face11.color = testColor;
 
-
+	// Material Cube
 	var material = new THREE.MeshBasicMaterial( 
     { 
     	color: 0xffffff, shading: THREE.FlatShading, 
     	vertexColors: THREE.FaceColors
 	});
+	var materialDroit = new THREE.MeshBasicMaterial( 
+    { color: 0xff0000, shading: THREE.FlatShading, vertexColors: THREE.FaceColors});
+    var materialGauche = new THREE.MeshBasicMaterial( 
+    { color: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.FaceColors});
+    var materialSommet = new THREE.MeshBasicMaterial( 
+    { color: 0x0000ff, shading: THREE.FlatShading, vertexColors: THREE.FaceColors});
+    var materialHaut = new THREE.MeshBasicMaterial( 
+    { color: 0x7a7a7a, shading: THREE.FlatShading, vertexColors: THREE.FaceColors});
+    var materialBas = new THREE.MeshBasicMaterial( 
+    { color: 0x4b0082, shading: THREE.FlatShading, vertexColors: THREE.FaceColors});
 
 
-	var mesh	= new THREE.Mesh( geometry, material );
+	var mesh = new THREE.Mesh( geometry, material );
 	mesh.position.y	= geometry.parameters.height/2
 	scene.add( mesh );
-	
-	
+
+
+	// Tous les autres mesh
+	var meshDroit = new THREE.Mesh( geometryDroit, materialDroit );
+	meshDroit.position.y	= geometryDroit.parameters.height/2
+	scene.add( meshDroit );
+	var meshGauche = new THREE.Mesh( geometryGauche, materialGauche );
+	meshGauche.position.y	= geometryGauche.parameters.height/2
+	scene.add( meshGauche );
+	var meshSommet = new THREE.Mesh( geometrySommet, materialSommet );
+	meshSommet.position.y	= geometrySommet.parameters.height/2
+	scene.add( meshSommet );
+	var meshHaut = new THREE.Mesh( geometryHaut, materialHaut );
+	meshHaut.position.y	= geometryHaut.parameters.height/2
+	scene.add( meshHaut );
+	var meshBas = new THREE.Mesh( geometryBas, materialBas );
+	meshBas.position.y	= geometryBas.parameters.height/2
+	scene.add( meshBas );
 	onRenderFcts.push(function(delta){
 		//mesh.rotation.x += Math.PI*delta
 	})
+
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render the whole thing on the page
@@ -196,10 +228,22 @@
 		renderer.render( scene, camera );
 	})
 
+
 	// run the rendering loop
 	var lastTimeMsec= null
 	requestAnimationFrame(function animate(nowMsec){
 		// keep looping
+			// Recherche position cube dans l'espace (Test)
+		var position = new THREE.Vector3();
+		position.getPositionFromMatrix( mesh.matrixWorld );
+		//mise à jour pos test
+		meshDroit.position.x = position.x + 1;
+		meshGauche.position.x = position.x - 1;
+		meshSommet.position.z = position.z - 2;
+		meshHaut.position.z = position.z - 1;
+		meshBas.position.z = position.z + 1;
+
+
 		requestAnimationFrame( animate );
 		// measure time
 		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
@@ -209,6 +253,7 @@
 		onRenderFcts.forEach(function(onRenderFct){
 			onRenderFct(deltaMsec/1000, nowMsec/1000)
 		})
+
 	})
 </script>
 </body>
