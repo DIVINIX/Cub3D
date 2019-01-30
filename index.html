@@ -214,6 +214,17 @@
 	var meshBas = new THREE.Mesh( geometryBas, materialBas );
 	meshBas.position.y	= geometryBas.parameters.height/2
 	scene.add( meshBas );
+
+	// Position cube central
+	var position = new THREE.Vector3();
+	position.getPositionFromMatrix( mesh.matrixWorld );
+	//mise à jour pos test
+	meshDroit.position.x = position.x + 1;
+	meshGauche.position.x = position.x - 1;
+	meshSommet.position.z = position.z - 2;
+	meshHaut.position.z = position.z - 1;
+	meshBas.position.z = position.z + 1;
+
 	onRenderFcts.push(function(delta){
 		//mesh.rotation.x += Math.PI*delta
 	})
@@ -233,17 +244,6 @@
 	var lastTimeMsec= null
 	requestAnimationFrame(function animate(nowMsec){
 		// keep looping
-			// Recherche position cube dans l'espace (Test)
-		var position = new THREE.Vector3();
-		position.getPositionFromMatrix( mesh.matrixWorld );
-		//mise à jour pos test
-		meshDroit.position.x = position.x + 1;
-		meshGauche.position.x = position.x - 1;
-		meshSommet.position.z = position.z - 2;
-		meshHaut.position.z = position.z - 1;
-		meshBas.position.z = position.z + 1;
-
-
 		requestAnimationFrame( animate );
 		// measure time
 		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
