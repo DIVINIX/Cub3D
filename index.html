@@ -6,8 +6,9 @@
 <script src="/data/ar.js"></script>
 <script>THREEx.ArToolkitContext.baseURL = '/'</script>
 
-<body style='margin : 0px; overflow: hidden; font-family: Monospace;'><div style='position: absolute; top: 10px; width:100%; text-align: center; z-index: 1;'>
-</div>
+<body style='overflow: hidden;'>
+<video id="video" width="640" height="480" autoplay></video>
+<canvas id="storeVid" width="640" height="480"></canvas>
 
 <script>
 	//////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +76,6 @@
 	////////////////////////////////////////////////////////////////////////////////
 	//          initialize arToolkitContext
 	////////////////////////////////////////////////////////////////////////////////
-	
 
 	// create atToolkitContext
 	var arToolkitContext = new THREEx.ArToolkitContext({
@@ -229,6 +229,69 @@
 		//mesh.rotation.x += Math.PI*delta
 	})
 
+	// webcam +
+	/*if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+            video.srcObject = stream;
+            video.play();
+        });
+    }*/
+
+	function sleep(ms) {
+  	return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+	async function demo() {
+	  console.log('Taking a break...');
+	  await sleep(4000);
+
+	  setTimeout( function() {
+		var canvasDupl = document.getElementById("storeVid");
+		var videoStream = document.getElementsByTagName("video")[0];
+		console.log(canvasDupl);
+		console.log(videoStream.innerWidth);
+		console.log(videoStream.innerHeight);
+                console.log("wsh les ienclis");
+            }, 200);
+
+	var positionTest = new THREE.Vector3();
+	positionTest.getPositionFromMatrix( meshSommet.matrixWorld );
+	positionTest = screenXY(positionTest);
+
+	/*ctx.fillStyle = "gold";
+	ctx.fillRect(positionTest.x, positionTest.y, 50, 50);*/
+
+	/*alert(positionTest.x);
+	alert(positionTest.y);*/
+
+	function screenXY(obj){
+
+	var vector = obj.clone();
+	var windowWidth = window.innerWidth;
+	var minWidth = 640;
+
+	if(windowWidth < minWidth) {
+	windowWidth = minWidth;
+	}
+
+	var widthHalf = (windowWidth/2);
+	var heightHalf = (window.innerHeight/2);
+
+	vector.project(camera);
+
+	vector.x = ( vector.x * widthHalf ) + widthHalf;
+	vector.y = - ( vector.y * heightHalf ) + heightHalf;
+	vector.z = 0;
+
+	return vector;
+
+	};
+	  console.log('Two seconds later');
+	}
+
+	demo();
+
+
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render the whole thing on the page
@@ -251,9 +314,12 @@
 		lastTimeMsec	= nowMsec
 		// call each update function
 		onRenderFcts.forEach(function(onRenderFct){
-			onRenderFct(deltaMsec/1000, nowMsec/1000)
+		onRenderFct(deltaMsec/1000, nowMsec/1000)
 		})
 
 	})
+
+	
+
 </script>
 </body>
