@@ -7,13 +7,21 @@
 <script>THREEx.ArToolkitContext.baseURL = '/'</script>
 
 <body style='overflow: hidden;'>
-<video id="video" width="640" height="480" autoplay></video>
-<canvas id="storeVid" width="640" height="480"></canvas>
+<video hidden id="video" width="1920" height="1440" autoplay></video>
+<canvas id="storeVid" width="1920" height="1440"></canvas>
 
 <script>
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Init
 	//////////////////////////////////////////////////////////////////////////////////
+	
+		// webcam +
+	if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+            video.srcObject = stream;
+            video.play();
+        });
+    }
 
 	// init renderer
 	var renderer	= new THREE.WebGLRenderer({
@@ -21,7 +29,7 @@
 		alpha: true
 	});
 	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
-	renderer.setSize( 640, 480 );
+	renderer.setSize( 1920, 1440 );
 	renderer.domElement.style.position = 'absolute'
 	renderer.domElement.style.top = '0px'
 	renderer.domElement.style.left = '0px'
@@ -228,22 +236,84 @@
 	onRenderFcts.push(function(delta){
 		//mesh.rotation.x += Math.PI*delta
 	})
+	
+	// Récupération video et application dans le canvas
+	var v = document.getElementById('video');
+	var myCanvas = document.getElementById('storeVid');
+	//myCanvas.width = window.innerWidth;;
+	//myCanvas.height = 1440;//window.innerHeight;
+	myCanvas.style.zIndex = 2;
+	myCanvas.style.position = "absolute";
+	myCanvas.style.border = "1px solid";
+	myCanvas.style.display = 0;
+	var myContext = myCanvas.getContext('2d');
 
-	// webcam +
-	/*if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-            video.srcObject = stream;
-            video.play();
-        });
-    }*/
-
-	function sleep(ms) {
-  	return new Promise(resolve => setTimeout(resolve, ms));
+	var cw = Math.floor(myCanvas.clientWidth);
+	var ch = Math.floor(myCanvas.clientHeight);
+	myCanvas.width = cw;
+	myCanvas.height = ch;
+	
+	var doubleSreenValue = window.innerWidth/2;
+	var reglageX = 2;
+	var reglageY = 11;
+	var tailleX = 15;
+	var tailleY = 15;
+	
+	draw(v,myContext,cw,ch);
+	
+	
+	function draw(v,c,w,h) 
+	{
+		// positions des elements
+		var positionSommet = new THREE.Vector3();
+		positionSommet.getPositionFromMatrix( meshSommet.matrixWorld );
+		positionSommet = screenXY(positionSommet);
+		
+		var positionHaut = new THREE.Vector3();
+		positionHaut.getPositionFromMatrix( meshHaut.matrixWorld );
+		positionHaut = screenXY(positionHaut);
+		
+		var positionBas = new THREE.Vector3();
+		positionBas.getPositionFromMatrix( meshBas.matrixWorld );
+		positionBas = screenXY(positionBas);
+		
+		var positionDroite = new THREE.Vector3();
+		positionDroite.getPositionFromMatrix( meshDroit.matrixWorld );
+		positionDroite = screenXY(positionDroite);
+		
+		var positionGauche = new THREE.Vector3();
+		positionGauche.getPositionFromMatrix( meshGauche.matrixWorld );
+		positionGauche = screenXY(positionGauche);
+		
+		c.drawImage(v,doubleSreenValue,0,w,h);
+		setTimeout(draw,40,v,c,w,h);
+		
+		var scale = scaleY(positionSommet.y, positionHaut.y);
+		console.log(scale);
+		c.fillRect(positionSommet.x + doubleSreenValue - (reglageX * scale), positionSommet.y - (reglageY * scale), tailleX * scale, tailleY * scale);
+		c.fillRect(positionHaut.x + doubleSreenValue - (reglageX * scale), positionHaut.y - (reglageY * scale), tailleX * scale, tailleY * scale);
+		c.fillRect(positionBas.x + doubleSreenValue - (reglageX * scale), positionBas.y - (reglageY * scale), tailleX * scale, tailleY * scale);
+		c.fillRect(positionDroite.x + doubleSreenValue - (reglageX * scale), positionDroite.y - (reglageY * scale), tailleX * scale, tailleY * scale);
+		c.fillRect(positionGauche.x + doubleSreenValue - (reglageX * scale), positionGauche.y - (reglageY * scale), tailleX * scale, tailleY * scale);
+		c.fillStyle = "#FF0000";
 	}
 
+	function scaleY(posSommetY, posHautY)
+	{
+		var scaleY = 1;
+		var diffY = posHautY - posSommetY;
+		for(i=0; i<= diffY; i++)
+		{
+			scaleY = scaleY + 0.05;
+		}
+		return scaleY;
+	}
+	// Tempo sleep pour tests
+	/*function sleep(ms) {
+  	return new Promise(resolve => setTimeout(resolve, ms));
+	}
 	async function demo() {
-	  console.log('Taking a break...');
-	  await sleep(4000);
+	  await sleep(2000);
 
 	  setTimeout( function() {
 		var canvasDupl = document.getElementById("storeVid");
@@ -258,12 +328,15 @@
 	positionTest.getPositionFromMatrix( meshSommet.matrixWorld );
 	positionTest = screenXY(positionTest);
 
-	/*ctx.fillStyle = "gold";
-	ctx.fillRect(positionTest.x, positionTest.y, 50, 50);*/
+	alert(positionTest.x);
+	alert(positionTest.y);
+	
+		  console.log('Tempo termine');
+	}
 
-	/*alert(positionTest.x);
-	alert(positionTest.y);*/
+	demo();*/
 
+	// Determine la position d'un object de la scene dans la fenetre
 	function screenXY(obj){
 
 	var vector = obj.clone();
@@ -275,7 +348,7 @@
 	}
 
 	var widthHalf = (windowWidth/2);
-	var heightHalf = (window.innerHeight/2);
+	var heightHalf = (window.innerHeight)/1.2;
 
 	vector.project(camera);
 
@@ -286,10 +359,7 @@
 	return vector;
 
 	};
-	  console.log('Two seconds later');
-	}
 
-	demo();
 
 
 

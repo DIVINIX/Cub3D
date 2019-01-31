@@ -5802,11 +5802,11 @@ ARjs.Source = THREEx.ArToolkitSource = function(parameters){
 		deviceId : null,
 
 		// resolution of at which we initialize in the source image
-		sourceWidth: 640,
-		sourceHeight: 480,
+		sourceWidth: 1920,
+		sourceHeight: 1440,
 		// resolution displayed for the source 
-		displayWidth: 640,
-		displayHeight: 480,
+		displayWidth: 1920,
+		displayHeight: 1440,
 	}
 	//////////////////////////////////////////////////////////////////////////////
 	//		setParameters
@@ -6123,12 +6123,10 @@ ARjs.Source.prototype.onResizeElement = function(){
 		
 		// init style.height/.marginTop to normal value
 		this.domElement.style.height = screenHeight+'px'
-		this.domElement.style.marginTop = '0px'
 	}else{
 		// compute newHeight and set .height/.marginTop
 		var newHeight = 1 / (sourceAspect / screenWidth)
 		this.domElement.style.height = newHeight+'px'
-		this.domElement.style.marginTop = -(newHeight-screenHeight)/2+'px'
 		
 		// init style.width/.marginLeft to normal value
 		this.domElement.style.width = screenWidth+'px'
@@ -6152,14 +6150,12 @@ ARjs.Source.prototype.copyElementSizeTo = function(otherElement){
 		otherElement.style.width = this.domElement.style.width
 		otherElement.style.height = this.domElement.style.height
 		otherElement.style.marginLeft = this.domElement.style.marginLeft
-		otherElement.style.marginTop = this.domElement.style.marginTop
 	}
 	else {
 		//portrait
 		otherElement.style.height = this.domElement.style.height
 		otherElement.style.width = (parseInt(otherElement.style.height) * 4/3)+"px";
 		otherElement.style.marginLeft = ((window.innerWidth- parseInt(otherElement.style.width))/2)+"px";
-		otherElement.style.marginTop = 0;
 	}
 
 }
